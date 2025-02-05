@@ -6,9 +6,10 @@ import Grid from "@mui/material/Grid";
 import Drawer from "@mui/material/Drawer";
 import { Button, useMediaQuery } from "@mui/material";
 import { NavbarContext } from "../Helper/Contexts/NavbarContext";
+import WindowIcon from "@mui/icons-material/Window";
 
 export const Home = () => {
-  const { toggle,setToggle } = useContext(NavbarContext);
+  const { toggle, setToggle } = useContext(NavbarContext);
   const isMobile = useMediaQuery("(max-width:600px)"); // Check if it's a small screen
 
   return (
@@ -33,9 +34,15 @@ export const Home = () => {
           anchor="left"
           open={toggle} // Drawer opens/close based on 'toggle' state
           variant="temporary"
-          sx={{"& .MuiDrawer-paper": {width: 240}}}
+          sx={{
+            "& .MuiDrawer-paper": { width: 240 },
+            borderRight: "2px solid black",
+          }}
         >
-                <Button onClick={()=>setToggle(!toggle)}> Expand</Button>
+          <Button onClick={() => setToggle(!toggle)}>
+            {" "}
+            <WindowIcon />
+          </Button>
 
           <Sidebbar />
         </Drawer>
