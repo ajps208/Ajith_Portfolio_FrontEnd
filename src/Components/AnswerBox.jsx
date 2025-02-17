@@ -38,7 +38,7 @@ export const AnswerBox = () => {
             maxWidth: "100%",
             borderRadius: "30px",
             boxShadow:
-              "0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08)",
+              "0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(19, 16, 16, 0.08)",
             transform: "translateY(-5px)",
             transition: "all 0.3s ease",
             "&:hover": {
