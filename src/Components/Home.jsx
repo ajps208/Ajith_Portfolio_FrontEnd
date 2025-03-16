@@ -1,15 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Sidebbar } from "./Sidebbar";
 import { Mainbar } from "./Mainbar";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Drawer from "@mui/material/Drawer";
 import { Button, useMediaQuery } from "@mui/material";
-import { NavbarContext } from "../Helper/Contexts/NavbarContext";
 import WindowIcon from "@mui/icons-material/Window";
+import useNavbarStore from "../Helper/Store/NavBarStore";
 
 export const Home = () => {
-  const { toggle, setToggle } = useContext(NavbarContext);
+  const { toggle, setToggle } = useNavbarStore();
   const isMobile = useMediaQuery("(max-width:600px)"); // Check if it's a small screen
 
   return (

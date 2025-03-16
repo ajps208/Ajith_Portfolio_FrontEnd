@@ -1,11 +1,31 @@
-import { Box, Button, IconButton, TextField } from "@mui/material";
-import React from "react";
+import { Box, Button, IconButton, TextField, Tooltip } from "@mui/material";
+import React, { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import ImageIcon from '@mui/icons-material/Image';
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import ImageIcon from "@mui/icons-material/Image";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import "../App.css";
+import { useGetAnswer } from "../Helper/ReactQuery/getAnswer";
+import { useAnswerStore } from "../Helper/Store/AnswerStore";
+import { useDarkModeStore } from "../Helper/Store/DarkModeStore";
 
 export const InputBox = () => {
+  const [question, setQuestion] = useState("");
+  const getAnswer = useGetAnswer();
+  const { messages, clearMessages } = useAnswerStore();
+  const { darkMode } = useDarkModeStore();
+
+  const HandleSubmit = () => {
+    console.log("handle submit");
+
+    if (question.trim() !== "") {
+      getAnswer.mutate(question);
+      setQuestion("");
+    } else {
+      alert("Please enter a question");
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -27,6 +47,7 @@ export const InputBox = () => {
           flexDirection: "column",
           alignItems: "center",
           boxShadow: "5px 0px 10px rgba(0, 0, 0, 0.5)",
+          backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
         }}
       >
         <TextField
@@ -34,9 +55,16 @@ export const InputBox = () => {
           multiline
           maxRows={15}
           variant="standard"
-          label={false} // Removes the label
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          autoFocus
           InputProps={{
-            disableUnderline: true, // Removes the underline
+            disableUnderline: true,
+            sx: {
+              color: darkMode ? "white" : "black", 
+              fontSize: "1rem",
+              lineHeight: "1.6",
+            },
           }}
           sx={{
             width: "100%",
@@ -45,7 +73,8 @@ export const InputBox = () => {
             height: "auto",
             overflow: "hidden",
             resize: "none",
-            backgroundColor: "white",
+            backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
+            color: darkMode ? "white" : "black",
           }}
         />
 
@@ -58,17 +87,44 @@ export const InputBox = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <IconButton className="iconButton">
-              <AttachFileIcon sx={{ color: "white" }} />
-            </IconButton>{" "}
-            <IconButton className="iconButton">
-              <ImageIcon sx={{ color: "white" }} />
-            </IconButton>
+            <Tooltip title="Add file">
+              <IconButton className="iconButton">
+                <AttachFileIcon sx={{ color: "white" }} />
+              </IconButton>
+            </Tooltip>{" "}
+            <Tooltip title="Add image">
+              <IconButton className="iconButton">
+                <ImageIcon sx={{ color: "white" }} />
+              </IconButton>
+            </Tooltip>
+            {messages.length > 0 && (
+              <Button
+                variant="outlined"
+                startIcon={<DeleteOutlineIcon />}
+                onClick={clearMessages}
+                sx={{
+                  textTransform: "none",
+                  borderRadius: "8px",
+                  borderColor:darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.12)",
+                  color:darkMode ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
+                  fontSize: "14px",
+                  ml: 1,
+                  "&:hover": {
+                    borderColor:darkMode ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)",
+                    backgroundColor:darkMode ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.04)",
+                  },
+                }}
+              >
+                New Chat
+              </Button>
+            )}
           </Box>
           <Box>
-            <IconButton className="iconButton">
-              <SendIcon sx={{ color: "white" }} />
-            </IconButton>
+            <Tooltip title="Send">
+              <IconButton className="iconButton" onClick={HandleSubmit}>
+                <SendIcon sx={{ color: "white" }} />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Box>
       </Box>
