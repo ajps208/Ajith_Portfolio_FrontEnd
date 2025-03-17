@@ -32,17 +32,18 @@ export const Home = () => {
       {isMobile && (
         <Drawer
           anchor="left"
-          open={toggle} // Drawer opens/close based on 'toggle' state
+          open={toggle} 
+          onClose={() => setToggle(!toggle)}
           variant="temporary"
           sx={{
             "& .MuiDrawer-paper": { width: 240 },
             borderRight: "2px solid black",
           }}
         >
-          <Button onClick={() => setToggle(!toggle)}>
+          {/* <Button onClick={() => setToggle(!toggle)}>
             {" "}
             <WindowIcon />
-          </Button>
+          </Button> */}
 
           <Sidebbar />
         </Drawer>

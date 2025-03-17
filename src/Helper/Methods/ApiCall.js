@@ -13,3 +13,16 @@ export const fetchAnswer = async (question) => {
       throw error;
     }
   };
+
+export const getQuestion = async () => {
+    try {
+      console.log("inside getQuestion");
+      const response = await axiosInstance.get('/questions');
+      console.log(response,"response getQuestion");
+      
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      throw error;
+    }
+  };
