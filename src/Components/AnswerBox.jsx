@@ -7,7 +7,7 @@ import {
   Chip,
   Grid,
 } from "@mui/material";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useAnswerStore } from "../Helper/Store/AnswerStore";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns"; // For message timestamps
@@ -18,11 +18,10 @@ import { useGetAnswer } from "../Helper/ReactQuery/getAnswer";
 
 export const AnswerBox = () => {
   const { messages, addMessage } = useAnswerStore();
-  const { data: fetchedQuestion, isLoading } = useFetchQuestions(); // Get directly from react-query
+  const { data: fetchedQuestion, isLoading } = useFetchQuestions();
   const { question, setQuestion } = useQuestionStore();
   const { darkMode } = useDarkModeStore();
-    const getAnswer = useGetAnswer();
-  
+  const getAnswer = useGetAnswer();
 
   const reversedMessages = [...messages].reverse();
 
@@ -294,46 +293,157 @@ export const AnswerBox = () => {
                       </Typography>
                     </Box>
                   ) : (
-                    <Box
-                      sx={{
-                        backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
-                        padding: "16px",
-                        borderRadius: "16px 16px 0 16px",
-                        boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.5)",
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "1.3rem",
-                        lineHeight: "1.6",
-                        width: "100%",
-                        "& pre": {
-                          backgroundColor: "#2d2d2d",
-                          color: "#fff",
-                          padding: "12px",
-                          borderRadius: "8px",
-                          overflowX: "auto",
-                          fontFamily: "'Roboto Mono', monospace",
-                        },
-                        "& code": {
-                          backgroundColor: "#f0f0f0",
-                          color: "#333",
-                          padding: "2px 4px",
-                          borderRadius: "4px",
-                          fontFamily: "'Roboto Mono', monospace",
-                        },
-                        "& a": {
-                          color: "#6C5CE7",
-                          textDecoration: "none",
-                          "&:hover": {
-                            textDecoration: "underline",
+                    <>
+                      <Box
+                        sx={{
+                          backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
+                          padding: "16px",
+                          borderRadius: "16px 16px 0 16px",
+                          boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.5)",
+                          fontFamily: "'Inter', sans-serif",
+                          fontSize: "1.3rem",
+                          lineHeight: "1.6",
+                          width: "100%",
+                          "& pre": {
+                            backgroundColor: "#2d2d2d",
+                            color: "#fff",
+                            padding: "12px",
+                            borderRadius: "8px",
+                            overflowX: "auto",
+                            fontFamily: "'Roboto Mono', monospace",
                           },
-                        },
-                        "& img": {
-                          maxWidth: "100%",
-                          borderRadius: "8px",
-                        },
-                      }}
-                    >
-                      <ReactMarkdown>{message.answer}</ReactMarkdown>
-                    </Box>
+                          "& code": {
+                            backgroundColor: "#f0f0f0",
+                            color: "#333",
+                            padding: "2px 4px",
+                            borderRadius: "4px",
+                            fontFamily: "'Roboto Mono', monospace",
+                          },
+                          "& a": {
+                            color: "#6C5CE7",
+                            textDecoration: "none",
+                            "&:hover": {
+                              textDecoration: "underline",
+                            },
+                          },
+                          "& img": {
+                            maxWidth: "100%",
+                            borderRadius: "8px",
+                            marginTop: "12px",
+                            marginBottom: "12px",
+                          },
+                        }}
+                      >
+                        <ReactMarkdown
+                          components={{
+                            img: ({ node, ...props }) => (
+                              <Box sx={{ textAlign: "center" }}>
+                                <img
+                                  {...props}
+                                  loading="lazy"
+                                  style={{
+                                    maxWidth: "100%",
+                                    height: "auto",
+                                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                                  }}
+                                  alt={props.alt || "Image"}
+                                />
+                              </Box>
+                            ),
+                          }}
+                        >
+                          {message.answer}
+                        </ReactMarkdown>
+
+                        {/* Handle direct image URLs that might not be in markdown format */}
+                        {message.answer.includes("Image") && (
+                          <>
+                            <Box sx={{ textAlign: "center", mt: 2 }}>
+                              <img
+                                src="/logo512.png"
+                                alt="Direct image link"
+                                style={{
+                                  maxWidth: "100%",
+                                  height: "auto",
+                                  borderRadius: "8px",
+                                  boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                                }}
+                                loading="lazy"
+                              />
+                            </Box>
+                          </>
+                        )}
+                        {message.answer.includes("Resume") && (
+                          <>
+                            <Box sx={{ width: "100%", height: "500px", mt: 2 }}>
+                              <iframe
+                                src="/admin.pdf"
+                                width="100%"
+                                height="100%"
+                                title="Generated PDF"
+                                style={{ border: "1px solid black" }}
+                              />
+                            </Box>
+                          </>
+                        )}
+                      </Box>
+
+                      {/* Show suggested questions for specific error message */}
+                      {message.answer ===
+                        "I'm sorry, I couldn't find an answer to that. Could you please rephrase your question or specify what you'd like to know about my experience, education, or other aspects of my background?" &&
+                        randomSuggestions.length > 0 && (
+                          <Box sx={{ width: "100%", mt: 2 }}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: darkMode ? "#fff" : "text.primary",
+                                mb: 1.5,
+                                fontWeight: 600,
+                                letterSpacing: "0.5px",
+                              }}
+                            >
+                              Try these instead:
+                            </Typography>
+                            <Grid container spacing={1.5}>
+                              {randomSuggestions.map((item, index) => (
+                                <Grid item key={item._id || index}>
+                                  <Chip
+                                    label={item.question}
+                                    onClick={() =>
+                                      handleSuggestionClick(item.question)
+                                    }
+                                    sx={{
+                                      backgroundColor: darkMode
+                                        ? "#424242"
+                                        : "#f5f5f5",
+                                      color: darkMode ? "#fff" : "#333",
+                                      fontSize: "0.95rem",
+                                      fontWeight: 500,
+                                      px: 1.5,
+                                      py: 1,
+                                      borderRadius: "6px",
+                                      boxShadow: darkMode
+                                        ? "0px 2px 4px rgba(255, 255, 255, 0.1)"
+                                        : "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                      "&:hover": {
+                                        backgroundColor: darkMode
+                                          ? "#535353"
+                                          : "#e0e0e0",
+                                        boxShadow: darkMode
+                                          ? "0px 3px 6px rgba(255, 255, 255, 0.15)"
+                                          : "0px 3px 6px rgba(0, 0, 0, 0.15)",
+                                        cursor: "pointer",
+                                      },
+                                      transition: "all 0.3s ease-in-out",
+                                      mb: 1,
+                                    }}
+                                  />
+                                </Grid>
+                              ))}
+                            </Grid>
+                          </Box>
+                        )}
+                    </>
                   )}
                 </Box>
               </Box>

@@ -12,7 +12,7 @@ import { useDarkModeStore } from "../Helper/Store/DarkModeStore";
 export const InputBox = () => {
   const [question, setQuestion] = useState("");
   const getAnswer = useGetAnswer();
-  const { messages, clearMessages } = useAnswerStore();
+  const { messages, clearMessages,addMessage} = useAnswerStore();
   const { darkMode } = useDarkModeStore();
 
   const HandleSubmit = () => {
@@ -25,6 +25,14 @@ export const InputBox = () => {
       alert("Please enter a question");
     }
   };
+
+  const ImageClick = () => {
+    addMessage({ question:"Generate Image ", answer: "Image", loading: false });
+  }
+
+  const ResumeClick = () => {
+    addMessage({ question:"Generate Resume", answer: "Resume", loading: false });
+  }
 
   return (
     <Box
@@ -87,13 +95,13 @@ export const InputBox = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: "10px" }}>
-            <Tooltip title="Add file">
-              <IconButton className="iconButton">
+            <Tooltip title="Generate Resume">
+              <IconButton className="iconButton" onClick={ResumeClick}>
                 <AttachFileIcon sx={{ color: "white" }} />
               </IconButton>
             </Tooltip>{" "}
-            <Tooltip title="Add image">
-              <IconButton className="iconButton">
+            <Tooltip title="Generate image">
+              <IconButton className="iconButton" onClick={ImageClick}>
                 <ImageIcon sx={{ color: "white" }} />
               </IconButton>
             </Tooltip>
