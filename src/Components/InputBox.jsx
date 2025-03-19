@@ -27,11 +27,11 @@ export const InputBox = () => {
   };
 
   const ImageClick = () => {
-    addMessage({ question:"Generate Image ", answer: "Image", loading: false });
+    addMessage({ question:"Generate Image ", answer: "Here is the Generated Image...", loading: false });
   }
 
   const ResumeClick = () => {
-    addMessage({ question:"Generate Resume", answer: "Resume", loading: false });
+    addMessage({ question:"Generate Resume", answer: "Here is the Generate Resume...", loading: false });
   }
 
   return (

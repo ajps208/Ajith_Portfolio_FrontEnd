@@ -229,8 +229,8 @@ export const AnswerBox = () => {
                     <Typography
                       sx={{
                         fontFamily: "'Inter', sans-serif",
-                        fontSize: "1rem",
-                        lineHeight: "1.6",
+                        fontSize: "1.1rem",
+                        lineHeight: "1.7",
                       }}
                     >
                       {message.question}
@@ -302,7 +302,7 @@ export const AnswerBox = () => {
                           boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.5)",
                           fontFamily: "'Inter', sans-serif",
                           fontSize: "1.3rem",
-                          lineHeight: "1.6",
+                          lineHeight: "1.7",
                           width: "100%",
                           "& pre": {
                             backgroundColor: "#2d2d2d",
