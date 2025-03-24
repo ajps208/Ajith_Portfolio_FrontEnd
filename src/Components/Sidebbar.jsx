@@ -13,13 +13,14 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EmailIcon from "@mui/icons-material/Email";
-import FacebookIcon from "@mui/icons-material/Facebook";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import PhoneIcon from "@mui/icons-material/Phone";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import AddIcon from "@mui/icons-material/Add";
 import ChatIcon from "@mui/icons-material/Chat";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import { useAnswerStore } from "../Helper/Store/AnswerStore";
 import { useDarkModeStore } from "../Helper/Store/DarkModeStore";
 
@@ -244,6 +245,12 @@ export const Sidebbar = () => {
               color: darkMode ? "#0a66c2" : "#0077b5",
               "&:hover": { transform: "scale(1.1)" },
             }}
+            onClick={() =>
+              window.open(
+                "https://www.linkedin.com/in/ajith-ps-16a743259/",
+                "_blank"
+              )
+            }
           >
             <LinkedInIcon />
           </IconButton>
@@ -253,6 +260,7 @@ export const Sidebbar = () => {
               color: darkMode ? "#ea4335" : "#d93025",
               "&:hover": { transform: "scale(1.1)" },
             }}
+            onClick={() => window.open("mailto:ajthps208@gmail.com", "_blank")}
           >
             <EmailIcon />
           </IconButton>
@@ -262,8 +270,9 @@ export const Sidebbar = () => {
               color: darkMode ? "#4267B2" : "#1877f2",
               "&:hover": { transform: "scale(1.1)" },
             }}
+            onClick={() => window.open("https://github.com/ajps208", "_blank")}
           >
-            <FacebookIcon />
+            <GitHubIcon />
           </IconButton>
           <IconButton
             size="small"
@@ -276,12 +285,25 @@ export const Sidebbar = () => {
           </IconButton>
           <IconButton
             size="small"
+            onClick={() => (window.location.href = "tel:+8139095765")}
             sx={{
               color: darkMode ? "#4caf50" : "#00a152",
               "&:hover": { transform: "scale(1.1)" },
             }}
           >
             <PhoneIcon />
+          </IconButton>
+          <IconButton
+            size="small"
+            sx={{
+              color: darkMode ? "#ff9800" : "#f57c00",
+              "&:hover": { transform: "scale(1.1)" },
+            }}
+            onClick={() =>
+              window.open("https://portfolio-ajithps.netlify.app/", "_blank")
+            }
+          >
+            <WorkOutlineIcon />
           </IconButton>
         </Stack>
       </Box>
