@@ -12,7 +12,7 @@ import { useDarkModeStore } from "../Helper/Store/DarkModeStore";
 export const InputBox = () => {
   const [question, setQuestion] = useState("");
   const getAnswer = useGetAnswer();
-  const { messages, clearMessages,addMessage} = useAnswerStore();
+  const { messages, clearMessages, addMessage } = useAnswerStore();
   const { darkMode } = useDarkModeStore();
 
   const HandleSubmit = () => {
@@ -27,12 +27,20 @@ export const InputBox = () => {
   };
 
   const ImageClick = () => {
-    addMessage({ question:"Generate Image ", answer: "Here is the Generated Image...", loading: false });
-  }
+    addMessage({
+      question: "Generate Image ",
+      answer: "Here is the Generated Image...",
+      loading: false,
+    });
+  };
 
   const ResumeClick = () => {
-    addMessage({ question:"Generate Resume", answer: "Here is the Generate Resume...", loading: false });
-  }
+    addMessage({
+      question: "Generate Resume",
+      answer: "Here is the Generate Resume...",
+      loading: false,
+    });
+  };
 
   return (
     <Box
@@ -65,11 +73,17 @@ export const InputBox = () => {
           variant="standard"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault(); // Prevent new line in TextField
+              HandleSubmit();
+            }
+          }}
           autoFocus
           InputProps={{
             disableUnderline: true,
             sx: {
-              color: darkMode ? "white" : "black", 
+              color: darkMode ? "white" : "black",
               fontSize: "1rem",
               lineHeight: "1.6",
             },
@@ -113,13 +127,21 @@ export const InputBox = () => {
                 sx={{
                   textTransform: "none",
                   borderRadius: "8px",
-                  borderColor:darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.12)",
-                  color:darkMode ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
+                  borderColor: darkMode
+                    ? "rgba(255, 255, 255, 0.12)"
+                    : "rgba(0, 0, 0, 0.12)",
+                  color: darkMode
+                    ? "rgba(255, 255, 255, 0.7)"
+                    : "rgba(0, 0, 0, 0.7)",
                   fontSize: "14px",
                   ml: 1,
                   "&:hover": {
-                    borderColor:darkMode ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)",
-                    backgroundColor:darkMode ? "rgba(255, 255, 255, 0.04)" : "rgba(0, 0, 0, 0.04)",
+                    borderColor: darkMode
+                      ? "rgba(255, 255, 255, 0.3)"
+                      : "rgba(0, 0, 0, 0.3)",
+                    backgroundColor: darkMode
+                      ? "rgba(255, 255, 255, 0.04)"
+                      : "rgba(0, 0, 0, 0.04)",
                   },
                 }}
               >

@@ -389,8 +389,7 @@ export const AnswerBox = () => {
                       </Box>
 
                       {/* Show suggested questions for specific error message */}
-                      {message.answer ===
-                        "I'm sorry, I couldn't find an answer to that. Could you please rephrase your question or specify what you'd like to know about my experience, education, or other aspects of my background?" &&
+                      {message.answer.includes("I'm sorry ") &&
                         randomSuggestions.length > 0 && (
                           <Box sx={{ width: "100%", mt: 2 }}>
                             <Typography
