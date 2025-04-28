@@ -15,6 +15,7 @@ import { useDarkModeStore } from "../Helper/Store/DarkModeStore";
 import { useFetchQuestions } from "../Helper/ReactQuery/getQuestions";
 import { useQuestionStore } from "../Helper/Store/QuestionStore";
 import { useGetAnswer } from "../Helper/ReactQuery/getAnswer";
+import { questionsArray } from "../Helper/Questions/questions";
 
 export const AnswerBox = () => {
   const { messages, addMessage } = useAnswerStore();
@@ -30,14 +31,13 @@ export const AnswerBox = () => {
     const shuffled = [...questions].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   };
-
-  // Get random questions when component mounts or when fetchedQuestion changes
+  // Get random questions when component mounts or when questionsArray changes
   const randomSuggestions = useMemo(() => {
-    if (fetchedQuestion && fetchedQuestion.length > 0) {
-      return getRandomQuestions(fetchedQuestion);
+    if (questionsArray && questionsArray.length > 0) {
+      return getRandomQuestions(questionsArray);
     }
     return [];
-  }, [fetchedQuestion]);
+  }, [questionsArray]);
 
   // Handler for clicking a suggested question
   const handleSuggestionClick = (questionText) => {
@@ -49,10 +49,10 @@ export const AnswerBox = () => {
   };
 
   useEffect(() => {
-    if (fetchedQuestion) {
-      setQuestion(fetchedQuestion);
+    if (questionsArray) {
+      setQuestion(questionsArray);
     }
-  }, [fetchedQuestion, setQuestion]);
+  }, [questionsArray, setQuestion]);
 
   return (
     <Box
@@ -282,13 +282,13 @@ export const AnswerBox = () => {
                       sx={{
                         display: "flex",
                         alignItems: "center",
-                        backgroundColor: "grey.100",
+                        backgroundColor: "#2a2a2a",
                         padding: "16px",
                         borderRadius: "16px 16px 0 16px",
                       }}
                     >
                       <CircularProgress size={24} sx={{ color: "#6C5CE7" }} />
-                      <Typography sx={{ ml: 2, color: "text.secondary" }}>
+                      <Typography sx={{ ml: 2, color: "white" }}>
                         Generating answer...
                       </Typography>
                     </Box>
@@ -297,7 +297,7 @@ export const AnswerBox = () => {
                       <Box
                         sx={{
                           backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
-                          padding: "16px",
+                          padding: "35px",
                           borderRadius: "16px 16px 0 16px",
                           boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.5)",
                           fontFamily: "'Inter', sans-serif",
