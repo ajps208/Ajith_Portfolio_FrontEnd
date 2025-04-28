@@ -297,7 +297,7 @@ export const AnswerBox = () => {
                       <Box
                         sx={{
                           backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
-                          padding: "35px",
+                          padding: "16px 35px 16px 35px",
                           borderRadius: "16px 16px 0 16px",
                           boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.5)",
                           fontFamily: "'Inter', sans-serif",
