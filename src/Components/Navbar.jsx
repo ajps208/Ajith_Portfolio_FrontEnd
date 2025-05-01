@@ -3,9 +3,12 @@ import React from 'react';
 import WindowIcon from '@mui/icons-material/Window';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import useNavbarStore from '../Helper/Store/NavBarStore';
+import { useDarkModeStore } from '../Helper/Store/DarkModeStore';
 
 export const Navbar = () => {
   const { toggle, setToggle } = useNavbarStore();
+    const { darkMode } = useDarkModeStore();
+  
 
   return (
     <Box
@@ -25,8 +28,8 @@ export const Navbar = () => {
 
       {/* Portfolio Icon */}
       <Tooltip title="Switch To Another Portfolio">
-      <IconButton onClick={() => window.open('https://portfolio-ajithps.netlify.app/', '_blank', 'noopener,noreferrer')}>
-        <OpenInNewIcon />
+      <IconButton onClick={() => window.open('https://portfolio-ajith-ps.vercel.app/', '_blank', 'noopener,noreferrer')}>
+        <OpenInNewIcon sx={{ color: darkMode ? "#61dafb" : "#2196f3" }} />
       </IconButton>
       </Tooltip>
     </Box>

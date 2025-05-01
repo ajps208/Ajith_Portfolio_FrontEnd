@@ -300,7 +300,7 @@ export const Sidebbar = () => {
               "&:hover": { transform: "scale(1.1)" },
             }}
             onClick={() =>
-              window.open("https://portfolio-ajithps.netlify.app/", "_blank")
+              window.open("https://portfolio-ajith-ps.vercel.app/", "_blank")
             }
           >
             <WorkOutlineIcon />
