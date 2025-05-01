@@ -141,30 +141,68 @@ export const AnswerBox = () => {
           messages.map((message, index) => (
             <Box key={index}>
               {/* Question */}
-              <Box sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
-                <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>U</Avatar>
-                <Box>
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography fontWeight={600}>You</Typography>
-                    <Typography variant="caption">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  marginBottom: "16px",
+                }}
+              >
+                <Avatar
+                  sx={{
+                    bgcolor: "primary.main",
+                    marginRight: "12px",
+                    width: 40,
+                    height: 40,
+                    boxShadow: "5px 0px 10px rgba(0, 0, 0, 0.5)",
+                  }}
+                >
+                  U
+                </Avatar>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                      You
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: darkMode ? "white" : "text.secondary" }}
+                    >
                       {format(new Date(), "h:mm a")}
                     </Typography>
                   </Box>
+
                   <Box
                     sx={{
-                      mt: 1,
                       backgroundColor: "primary.light",
                       color: "primary.contrastText",
-                      p: 2,
+                      padding: "12px 16px",
                       borderRadius: "16px 16px 16px 0",
+                      display: "inline-block",
                       maxWidth: "100%",
                       wordBreak: "break-word",
+                      boxShadow: "5px 0px 10px rgba(0, 0, 0, 0.5)",
                     }}
                   >
-                    <Typography fontSize="1rem">{message.question}</Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "1rem",
+                        lineHeight: "1.7",
+                      }}
+                    >
+                      {message.question}
+                    </Typography>
                   </Box>
                 </Box>
               </Box>
+
 
               {/* Answer */}
               <Box sx={{ display: "flex", alignItems: "flex-start" }}>
