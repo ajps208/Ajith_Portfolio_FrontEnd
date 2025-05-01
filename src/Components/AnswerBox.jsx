@@ -31,7 +31,7 @@ export const AnswerBox = () => {
     }
   }, [messages]);
 
-  const getRandomQuestions = (questions, count = 6) => {
+  const getRandomQuestions = (questions, count = 8) => {
     const shuffled = [...questions].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   };
@@ -97,9 +97,9 @@ export const AnswerBox = () => {
             <Typography variant="h6" mb={2} color={darkMode ? "#fff" : "text.primary"}>
               Ask a question to get started
             </Typography>
-            <Typography variant="body2" mb={3} color={darkMode ? "#fff" : "text.secondary"}>
+            {/* <Typography variant="body2" mb={3} color={darkMode ? "#fff" : "text.secondary"}>
               Your conversation  will appear here
-            </Typography>
+            </Typography> */}
             {randomSuggestions.length > 0 && (
               <>
                 <Typography
@@ -122,7 +122,7 @@ export const AnswerBox = () => {
                           backgroundColor: darkMode ? "#424242" : "#f5f5f5",
                           color: darkMode ? "#fff" : "#333",
                           fontWeight: 500,
-                          px: 2,
+                          px: 1,
                           py: 1,
                           borderRadius: "8px",
                           "&:hover": {
