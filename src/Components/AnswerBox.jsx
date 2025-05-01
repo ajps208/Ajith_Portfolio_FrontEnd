@@ -7,10 +7,10 @@ import {
   Chip,
   Grid,
 } from "@mui/material";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useAnswerStore } from "../Helper/Store/AnswerStore";
 import ReactMarkdown from "react-markdown";
-import { format } from "date-fns"; // For message timestamps
+import { format } from "date-fns";
 import { useDarkModeStore } from "../Helper/Store/DarkModeStore";
 import { useFetchQuestions } from "../Helper/ReactQuery/getQuestions";
 import { useQuestionStore } from "../Helper/Store/QuestionStore";
@@ -18,40 +18,38 @@ import { useGetAnswer } from "../Helper/ReactQuery/getAnswer";
 import { questionsArray } from "../Helper/Questions/questions";
 
 export const AnswerBox = () => {
-  const { messages, addMessage } = useAnswerStore();
-  const { data: fetchedQuestion, isLoading } = useFetchQuestions();
-  const { question, setQuestion } = useQuestionStore();
+  const { messages } = useAnswerStore();
+  const { setQuestion } = useQuestionStore();
   const { darkMode } = useDarkModeStore();
   const getAnswer = useGetAnswer();
+  const bottomRef = useRef(null); // Ref for scrolling
 
-  const reversedMessages = [...messages].reverse();
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
-  // Function to get random questions
-  const getRandomQuestions = (questions, count = 8) => {
+  const getRandomQuestions = (questions, count = 6) => {
     const shuffled = [...questions].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   };
-  // Get random questions when component mounts or when questionsArray changes
+
   const randomSuggestions = useMemo(() => {
-    if (questionsArray && questionsArray.length > 0) {
-      return getRandomQuestions(questionsArray);
-    }
-    return [];
+    return questionsArray && questionsArray.length > 0
+      ? getRandomQuestions(questionsArray)
+      : [];
   }, [questionsArray]);
 
-  // Handler for clicking a suggested question
   const handleSuggestionClick = (questionText) => {
     if (questionText.trim() !== "") {
       getAnswer.mutate(questionText);
-    } else {
-      alert("Please enter a question");
     }
   };
 
   useEffect(() => {
-    if (questionsArray) {
-      setQuestion(questionsArray);
-    }
+    if (questionsArray) setQuestion(questionsArray);
   }, [questionsArray, setQuestion]);
 
   return (
@@ -59,10 +57,7 @@ export const AnswerBox = () => {
       sx={{
         width: "100%",
         height: "100%",
-        display: "flex",
-        justifyContent: "center",
         overflowY: "auto",
-        overflowX: "hidden",
         padding: "20px 0",
         "&::-webkit-scrollbar": {
           width: "8px",
@@ -82,64 +77,42 @@ export const AnswerBox = () => {
     >
       <Box
         sx={{
-          width: { xs: "95%", sm: "90%", md: "100%" },
-          maxWidth: "85%",
+          width: { xs: "95%", sm: "90%", md: "85%" },
+          margin: "auto",
           display: "flex",
-          gap: "24px",
           flexDirection: "column",
+          gap: 3,
         }}
       >
-        {reversedMessages.length === 0 ? (
+        {messages.length === 0 ? (
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "auto",
-              minHeight: "200px",
-              opacity: 0.7,
-              width: "100%",
-              backgroundColor: darkMode ? "#2a2a2a" : "rgba(0, 0, 0, 0.02)",
-              borderRadius: "16px",
-              padding: "20px",
+              backgroundColor: darkMode ? "#2a2a2a" : "rgba(0,0,0,0.02)",
+              borderRadius: 4,
+              padding: 4,
               textAlign: "center",
+              opacity: 0.8,
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                marginBottom: "12px",
-                color: darkMode ? "white" : "text.primary",
-              }}
-            >
+            <Typography variant="h6" mb={2} color={darkMode ? "#fff" : "text.primary"}>
               Ask a question to get started
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: darkMode ? "white" : "text.secondary",
-                marginBottom: "24px",
-              }}
-            >
-              Your conversation history will appear here
+            <Typography variant="body2" mb={3} color={darkMode ? "#fff" : "text.secondary"}>
+              Your conversation  will appear here
             </Typography>
-
-            {/* Suggested Questions */}
             {randomSuggestions.length > 0 && (
-              <Box sx={{ width: "100%", mt: 2 }}>
+              <>
                 <Typography
                   variant="h6"
                   sx={{
                     color: darkMode ? "#fff" : "text.primary",
-                    mb: 1.5,
+                    mb: 2,
                     fontWeight: 600,
-                    letterSpacing: "0.5px",
                   }}
                 >
                   Suggested Questions:
                 </Typography>
-                <Grid container spacing={1.5}>
+                <Grid container spacing={1.5} justifyContent="center">
                   {randomSuggestions.map((item, index) => (
                     <Grid item key={item._id || index}>
                       <Chip
@@ -148,309 +121,171 @@ export const AnswerBox = () => {
                         sx={{
                           backgroundColor: darkMode ? "#424242" : "#f5f5f5",
                           color: darkMode ? "#fff" : "#333",
-                          fontSize: "0.95rem",
                           fontWeight: 500,
-                          px: 1.5,
+                          px: 2,
                           py: 1,
-                          borderRadius: "6px",
-                          boxShadow: darkMode
-                            ? "0px 2px 4px rgba(255, 255, 255, 0.1)"
-                            : "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                          borderRadius: "8px",
                           "&:hover": {
                             backgroundColor: darkMode ? "#535353" : "#e0e0e0",
-                            boxShadow: darkMode
-                              ? "0px 3px 6px rgba(255, 255, 255, 0.15)"
-                              : "0px 3px 6px rgba(0, 0, 0, 0.15)",
                             cursor: "pointer",
                           },
-                          transition: "all 0.3s ease-in-out",
-                          mb: 1,
                         }}
                       />
                     </Grid>
                   ))}
                 </Grid>
-              </Box>
+              </>
             )}
           </Box>
         ) : (
-          reversedMessages.map((message, index) => (
-            <Box key={index} sx={{ width: "100%" }}>
-              {/* Question section */}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  marginBottom: "16px",
-                }}
-              >
-                <Avatar
-                  sx={{
-                    bgcolor: "primary.main",
-                    marginRight: "12px",
-                    width: 40,
-                    height: 40,
-                    boxShadow: "5px 0px 10px rgba(0, 0, 0, 0.5)",
-                  }}
-                >
-                  U
-                </Avatar>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                      You
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: darkMode ? "white" : "text.secondary" }}
-                    >
+          messages.map((message, index) => (
+            <Box key={index}>
+              {/* Question */}
+              <Box sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+                <Avatar sx={{ bgcolor: "primary.main", mr: 2 }}>U</Avatar>
+                <Box>
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography fontWeight={600}>You</Typography>
+                    <Typography variant="caption">
                       {format(new Date(), "h:mm a")}
                     </Typography>
                   </Box>
-
                   <Box
                     sx={{
+                      mt: 1,
                       backgroundColor: "primary.light",
                       color: "primary.contrastText",
-                      padding: "12px 16px",
+                      p: 2,
                       borderRadius: "16px 16px 16px 0",
-                      display: "inline-block",
                       maxWidth: "100%",
                       wordBreak: "break-word",
-                      boxShadow: "5px 0px 10px rgba(0, 0, 0, 0.5)",
                     }}
                   >
-                    <Typography
-                      sx={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: "1.1rem",
-                        lineHeight: "1.7",
-                      }}
-                    >
-                      {message.question}
-                    </Typography>
+                    <Typography fontSize="1rem">{message.question}</Typography>
                   </Box>
                 </Box>
               </Box>
 
-              {/* Answer section */}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  marginBottom: "24px",
-                }}
-              >
-                <Avatar
-                  sx={{
-                    bgcolor: "#6C5CE7",
-                    marginRight: "12px",
-                    width: 40,
-                    height: 40,
-                    boxShadow: "5px 0px 10px rgba(0, 0, 0, 0.5)",
-                  }}
-                >
-                  A
-                </Avatar>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                      Assistant
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: darkMode ? "white" : "text.secondary" }}
-                    >
+              {/* Answer */}
+              <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+                <Avatar sx={{ bgcolor: "#6C5CE7", mr: 2 }}>A</Avatar>
+                <Box sx={{ width: "100%" }}>
+                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                    <Typography fontWeight={600}>Assistant</Typography>
+                    <Typography variant="caption">
                       {format(new Date(), "h:mm a")}
                     </Typography>
                   </Box>
 
                   {message.loading ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        backgroundColor: "#2a2a2a",
-                        padding: "16px",
-                        borderRadius: "16px 16px 0 16px",
-                      }}
-                    >
-                      <CircularProgress size={24} sx={{ color: "#6C5CE7" }} />
-                      <Typography sx={{ ml: 2, color: "white" }}>
-                        Generating answer...
-                      </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                      <CircularProgress size={20} sx={{ color: "#6C5CE7", mr: 2 }} />
+                      <Typography>Generating answer...</Typography>
                     </Box>
                   ) : (
-                    <>
-                      <Box
-                        sx={{
-                          backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
-                          padding: "16px 35px 16px 35px",
-                          borderRadius: "16px 16px 0 16px",
-                          boxShadow: "2px 0px 10px rgba(0, 0, 0, 0.5)",
-                          fontFamily: "'Inter', sans-serif",
-                          fontSize: "1.3rem",
-                          lineHeight: "1.7",
-                          width: "100%",
-                          "& pre": {
-                            backgroundColor: "#2d2d2d",
-                            color: "#fff",
-                            padding: "12px",
-                            borderRadius: "8px",
-                            overflowX: "auto",
-                            fontFamily: "'Roboto Mono', monospace",
-                          },
-                          "& code": {
-                            backgroundColor: "#f0f0f0",
-                            color: "#333",
-                            padding: "2px 4px",
-                            borderRadius: "4px",
-                            fontFamily: "'Roboto Mono', monospace",
-                          },
-                          "& a": {
-                            color: "#6C5CE7",
-                            textDecoration: "none",
-                            "&:hover": {
-                              textDecoration: "underline",
-                            },
-                          },
-                          "& img": {
-                            maxWidth: "100%",
-                            borderRadius: "8px",
-                            marginTop: "12px",
-                            marginBottom: "12px",
-                          },
-                        }}
-                      >
-                        <ReactMarkdown
-                          components={{
-                            img: ({ node, ...props }) => (
-                              <Box sx={{ textAlign: "center" }}>
-                                <img
-                                  {...props}
-                                  loading="lazy"
-                                  style={{
-                                    maxWidth: "100%",
-                                    height: "auto",
-                                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                                  }}
-                                  alt={props.alt || "Image"}
-                                />
-                              </Box>
-                            ),
-                          }}
-                        >
-                          {message.answer}
-                        </ReactMarkdown>
-
-                        {/* Handle direct image URLs that might not be in markdown format */}
-                        {message.answer.includes("Image") && (
-                          <>
-                            <Box sx={{ textAlign: "center", mt: 2 }}>
+                    <Box
+                      sx={{
+                        mt: 1,
+                        backgroundColor: darkMode ? "#2a2a2a" : "grey.100",
+                        color: darkMode ? "#fff" : "#000",
+                        p: 3,
+                        borderRadius: "16px 16px 0 16px",
+                        fontFamily: "'Inter', sans-serif",
+                        fontSize: "1.1rem",
+                        lineHeight: 1.7,
+                        "& pre": {
+                          backgroundColor: "#2d2d2d",
+                          color: "#fff",
+                          padding: "12px",
+                          borderRadius: "8px",
+                          overflowX: "auto",
+                          fontFamily: "'Roboto Mono', monospace",
+                        },
+                        "& code": {
+                          backgroundColor: "#f0f0f0",
+                          color: "#333",
+                          padding: "2px 4px",
+                          borderRadius: "4px",
+                          fontFamily: "'Roboto Mono', monospace",
+                        },
+                      }}
+                    >
+                      <ReactMarkdown
+                        components={{
+                          img: ({ node, ...props }) => (
+                            <Box sx={{ textAlign: "center" }}>
                               <img
-                                src="/logo512.png"
-                                alt="Direct image link"
+                                {...props}
+                                loading="lazy"
+                                alt={props.alt || "Image"}
                                 style={{
                                   maxWidth: "100%",
                                   height: "auto",
                                   borderRadius: "8px",
+                                  marginTop: "12px",
                                   boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
                                 }}
-                                loading="lazy"
                               />
                             </Box>
-                          </>
-                        )}
-                        {message.answer.includes("Resume") && (
-                          <>
-                            <Box sx={{ width: "100%", height: "500px", mt: 2 }}>
-                              <iframe
-                                src="/admin.pdf"
-                                width="100%"
-                                height="100%"
-                                title="Generated PDF"
-                                style={{ border: "1px solid black" }}
-                              />
-                            </Box>
-                          </>
-                        )}
-                      </Box>
+                          ),
+                        }}
+                      >
+                        {message.answer}
+                      </ReactMarkdown>
 
-                      {/* Show suggested questions for specific error message */}
-                      {message.answer.includes("I'm sorry ") &&
-                        randomSuggestions.length > 0 && (
-                          <Box sx={{ width: "100%", mt: 2 }}>
-                            <Typography
-                              variant="h6"
+                      {/* Special case images or PDFs */}
+                      {message.answer.includes("Resume") && (
+                        <Box sx={{ width: "100%", height: "500px", mt: 2 }}>
+                          <iframe
+                            src="/admin.pdf"
+                            width="100%"
+                            height="100%"
+                            title="Resume PDF"
+                            style={{ border: "1px solid black" }}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                  )}
+
+                  {/* Suggestions after assistant error */}
+                  {message.answer?.includes("I'm sorry") && randomSuggestions.length > 0 && (
+                    <Box mt={2}>
+                      <Typography variant="h6" mb={1}>
+                        Try these instead:
+                      </Typography>
+                      <Grid container spacing={1.5}>
+                        {randomSuggestions.map((item, idx) => (
+                          <Grid item key={item._id || idx}>
+                            <Chip
+                              label={item.question}
+                              onClick={() => handleSuggestionClick(item.question)}
                               sx={{
-                                color: darkMode ? "#fff" : "text.primary",
-                                mb: 1.5,
-                                fontWeight: 600,
-                                letterSpacing: "0.5px",
+                                backgroundColor: darkMode ? "#424242" : "#f5f5f5",
+                                color: darkMode ? "#fff" : "#333",
+                                fontSize: "0.95rem",
+                                fontWeight: 500,
+                                px: 1.5,
+                                py: 1,
+                                borderRadius: "6px",
+                                "&:hover": {
+                                  backgroundColor: darkMode ? "#535353" : "#e0e0e0",
+                                  cursor: "pointer",
+                                },
                               }}
-                            >
-                              Try these instead:
-                            </Typography>
-                            <Grid container spacing={1.5}>
-                              {randomSuggestions.map((item, index) => (
-                                <Grid item key={item._id || index}>
-                                  <Chip
-                                    label={item.question}
-                                    onClick={() =>
-                                      handleSuggestionClick(item.question)
-                                    }
-                                    sx={{
-                                      backgroundColor: darkMode
-                                        ? "#424242"
-                                        : "#f5f5f5",
-                                      color: darkMode ? "#fff" : "#333",
-                                      fontSize: "0.95rem",
-                                      fontWeight: 500,
-                                      px: 1.5,
-                                      py: 1,
-                                      borderRadius: "6px",
-                                      boxShadow: darkMode
-                                        ? "0px 2px 4px rgba(255, 255, 255, 0.1)"
-                                        : "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                                      "&:hover": {
-                                        backgroundColor: darkMode
-                                          ? "#535353"
-                                          : "#e0e0e0",
-                                        boxShadow: darkMode
-                                          ? "0px 3px 6px rgba(255, 255, 255, 0.15)"
-                                          : "0px 3px 6px rgba(0, 0, 0, 0.15)",
-                                        cursor: "pointer",
-                                      },
-                                      transition: "all 0.3s ease-in-out",
-                                      mb: 1,
-                                    }}
-                                  />
-                                </Grid>
-                              ))}
-                            </Grid>
-                          </Box>
-                        )}
-                    </>
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
                   )}
                 </Box>
               </Box>
 
-              {index < reversedMessages.length - 1 && (
+              {index < messages.length - 1 && (
                 <Divider
                   sx={{
-                    marginY: "8px",
+                    my: 2,
                     backgroundColor: darkMode ? "#2a2a2a" : "grey.200",
                   }}
                 />
@@ -458,6 +293,8 @@ export const AnswerBox = () => {
             </Box>
           ))
         )}
+        {/* Scroll anchor */}
+        <div ref={bottomRef} />
       </Box>
     </Box>
   );
