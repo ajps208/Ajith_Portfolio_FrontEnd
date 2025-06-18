@@ -94,7 +94,11 @@ export const AnswerBox = () => {
               opacity: 0.8,
             }}
           >
-            <Typography variant="h6" mb={2} color={darkMode ? "#fff" : "text.primary"}>
+            <Typography
+              variant="h6"
+              mb={2}
+              color={darkMode ? "#fff" : "text.primary"}
+            >
               Ask a question to get started
             </Typography>
             {/* <Typography variant="body2" mb={3} color={darkMode ? "#fff" : "text.secondary"}>
@@ -203,12 +207,13 @@ export const AnswerBox = () => {
                 </Box>
               </Box>
 
-
               {/* Answer */}
               <Box sx={{ display: "flex", alignItems: "flex-start" }}>
                 <Avatar sx={{ bgcolor: "#6C5CE7", mr: 2 }}>A</Avatar>
                 <Box sx={{ width: "100%" }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
                     <Typography fontWeight={600}>Assistant</Typography>
                     <Typography variant="caption">
                       {format(new Date(), "h:mm a")}
@@ -217,7 +222,10 @@ export const AnswerBox = () => {
 
                   {message.loading ? (
                     <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                      <CircularProgress size={20} sx={{ color: "#6C5CE7", mr: 2 }} />
+                      <CircularProgress
+                        size={20}
+                        sx={{ color: "#6C5CE7", mr: 2 }}
+                      />
                       <Typography>Generating answer...</Typography>
                     </Box>
                   ) : (
@@ -272,6 +280,7 @@ export const AnswerBox = () => {
                       </ReactMarkdown>
 
                       {/* Special case images or PDFs */}
+                      {/* Special case images or PDFs */}
                       {message.answer.includes("Resume") && (
                         <Box sx={{ width: "100%", height: "500px", mt: 2 }}>
                           <iframe
@@ -283,40 +292,63 @@ export const AnswerBox = () => {
                           />
                         </Box>
                       )}
+
+                      {(message.answer.includes("Image") ||
+                        message.answer.includes("photo")) && (
+                        <Box sx={{ width: "100%", textAlign: "center", mt: 2 }}>
+                          <img
+                            src="/Ajith ps.png"
+                            alt="Detected Image"
+                            style={{
+                              maxWidth: "100%",
+                              height: "500px",
+                              borderRadius: "12px",
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                            }}
+                          />
+                        </Box>
+                      )}
                     </Box>
                   )}
 
                   {/* Suggestions after assistant error */}
-                  {message.answer?.includes("I'm sorry") && randomSuggestions.length > 0 && (
-                    <Box mt={2}>
-                      <Typography variant="h6" mb={1}>
-                        Try these instead:
-                      </Typography>
-                      <Grid container spacing={1.5}>
-                        {randomSuggestions.map((item, idx) => (
-                          <Grid item key={item._id || idx}>
-                            <Chip
-                              label={item.question}
-                              onClick={() => handleSuggestionClick(item.question)}
-                              sx={{
-                                backgroundColor: darkMode ? "#424242" : "#f5f5f5",
-                                color: darkMode ? "#fff" : "#333",
-                                fontSize: "0.95rem",
-                                fontWeight: 500,
-                                px: 1.5,
-                                py: 1,
-                                borderRadius: "6px",
-                                "&:hover": {
-                                  backgroundColor: darkMode ? "#535353" : "#e0e0e0",
-                                  cursor: "pointer",
-                                },
-                              }}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Box>
-                  )}
+                  {message.answer?.includes("I'm sorry") &&
+                    randomSuggestions.length > 0 && (
+                      <Box mt={2}>
+                        <Typography variant="h6" mb={1}>
+                          Try these instead:
+                        </Typography>
+                        <Grid container spacing={1.5}>
+                          {randomSuggestions.map((item, idx) => (
+                            <Grid item key={item._id || idx}>
+                              <Chip
+                                label={item.question}
+                                onClick={() =>
+                                  handleSuggestionClick(item.question)
+                                }
+                                sx={{
+                                  backgroundColor: darkMode
+                                    ? "#424242"
+                                    : "#f5f5f5",
+                                  color: darkMode ? "#fff" : "#333",
+                                  fontSize: "0.95rem",
+                                  fontWeight: 500,
+                                  px: 1.5,
+                                  py: 1,
+                                  borderRadius: "6px",
+                                  "&:hover": {
+                                    backgroundColor: darkMode
+                                      ? "#535353"
+                                      : "#e0e0e0",
+                                    cursor: "pointer",
+                                  },
+                                }}
+                              />
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Box>
+                    )}
                 </Box>
               </Box>
 
